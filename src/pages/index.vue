@@ -34,19 +34,16 @@ const getTransform = computed<string>(() => {
   return `translate3d(0,${vistualObj.offset}px,0)`
 })
 const showList = computed<Data[]>(() => {
-  return data.value.slice(vistualObj.start, vistualObj.end)
+  return data.value.slice(vistualObj.start, vistualObj.end > data.value.length ? data.value.length : vistualObj.end)
 })
 const listHeight = computed<string>(() => {
   return `${data.value.length * vistualObj.itemHeight}px`
 })
 const onScroll = (e: Event) => {
-  const scrollTop: number = (e.target as HTMLInputElement).scrollTop
-  vistualObj.start = Math.ceil(scrollTop / vistualObj.itemHeight)
+  const scrollTop: number = (e.target as HTMLDivElement).scrollTop
+  vistualObj.start = Math.floor(scrollTop / vistualObj.itemHeight)
   vistualObj.end = vistualObj.start + vistualObj.listCount
-  if (scrollTop === (parseInt(listHeight.value) - viewportHeight.value))
-    vistualObj.offset = scrollTop - (scrollTop % vistualObj.itemHeight) + 27
-  else
-    vistualObj.offset = scrollTop - (scrollTop % vistualObj.itemHeight)
+  vistualObj.offset = scrollTop - (scrollTop % vistualObj.itemHeight)
 }
 onMounted(() => {
   data.value = dd
